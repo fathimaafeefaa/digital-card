@@ -1,75 +1,72 @@
 <template>
   <div class="flex justify-center">
-    <div v-if="loading" class="text-gray-500 mt-20">Loading card...</div>
+    <div v-if="loading" class="mt-20 text-gray-500">Loading card...</div>
 
     <div v-else-if="student" class="w-full max-w-sm">
 
       <!-- Card Front -->
-      <div class="bg-primary rounded-2xl shadow-2xl overflow-hidden">
+      <div class="overflow-hidden shadow-2xl bg-primary rounded-2xl">
 
         <!-- Top banner -->
-        <div class="bg-accent px-6 py-3 flex justify-between items-center">
-          <span class="text-primary font-bold text-sm">COLLEGE NAME</span>
-          <span class="text-primary text-xs font-semibold">STUDENT ID CARD</span>
+        <div class="flex items-center justify-between px-6 py-3 bg-accent">
+          <span class="text-sm font-bold text-primary">COLLEGE NAME</span>
+          <span class="text-xs font-semibold text-primary">STUDENT ID CARD</span>
         </div>
 
         <!-- Card body -->
         <div class="px-6 py-6">
           <!-- Photo -->
           <div class="flex justify-center mb-4">
-            <div class="w-24 h-24 rounded-full border-4 border-accent overflow-hidden bg-gray-200 flex items-center justify-center">
-              <img
-                v-if="student.photo_url"
-                :src="student.photo_url"
-                class="w-full h-full object-cover"
-              />
-              <span v-else class="text-4xl text-gray-400 font-bold">
+            <div
+              class="flex items-center justify-center w-24 h-24 overflow-hidden bg-gray-200 border-4 rounded-full border-accent">
+              <img v-if="student.photo_url" :src="student.photo_url" class="object-cover w-full h-full" />
+              <span v-else class="text-4xl font-bold text-gray-400">
                 {{ student.full_name?.charAt(0) }}
               </span>
             </div>
           </div>
 
           <!-- Name -->
-          <div class="text-center mb-6">
-            <h2 class="text-white text-xl font-bold">{{ student.full_name }}</h2>
+          <div class="mb-6 text-center">
+            <h2 class="text-xl font-bold text-white">{{ student.full_name }}</h2>
             <p class="text-accent text-sm font-semibold mt-0.5">{{ student.Department?.name }}</p>
           </div>
 
           <!-- Details -->
-          <div class="space-y-2 mb-6">
+          <div class="mb-6 space-y-2">
             <div class="flex justify-between">
-              <span class="text-gray-400 text-xs">Student ID</span>
-              <span class="text-white text-xs font-semibold">{{ student.student_id }}</span>
+              <span class="text-xs text-gray-400">Student ID</span>
+              <span class="text-xs font-semibold text-white">{{ student.student_id }}</span>
             </div>
             <div class="flex justify-between">
-              <span class="text-gray-400 text-xs">Year</span>
-              <span class="text-white text-xs font-semibold">Year {{ student.year }}</span>
+              <span class="text-xs text-gray-400">Year</span>
+              <span class="text-xs font-semibold text-white">Year {{ student.year }}</span>
             </div>
             <div class="flex justify-between">
-              <span class="text-gray-400 text-xs">Faculty</span>
-              <span class="text-white text-xs font-semibold">{{ student.Department?.faculty }}</span>
+              <span class="text-xs text-gray-400">Faculty</span>
+              <span class="text-xs font-semibold text-white">{{ student.Department?.faculty }}</span>
             </div>
             <div class="flex justify-between">
-              <span class="text-gray-400 text-xs">Email</span>
-              <span class="text-white text-xs font-semibold">{{ student.email }}</span>
+              <span class="text-xs text-gray-400">Email</span>
+              <span class="text-xs font-semibold text-white">{{ student.email }}</span>
             </div>
             <div class="flex justify-between">
-              <span class="text-gray-400 text-xs">Status</span>
-              <span class="text-green-400 text-xs font-semibold uppercase">{{ student.status }}</span>
+              <span class="text-xs text-gray-400">Status</span>
+              <span class="text-xs font-semibold text-green-400 uppercase">{{ student.status }}</span>
             </div>
           </div>
 
           <!-- QR Code -->
-          <div class="flex justify-center bg-white rounded-xl p-3">
+          <div class="flex justify-center p-3 bg-white rounded-xl">
             <canvas ref="qrCanvas"></canvas>
           </div>
-          <p class="text-center text-gray-400 text-xs mt-2">Scan to verify identity</p>
+          <p class="mt-2 text-xs text-center text-gray-400">Scan to verify identity</p>
 
         </div>
 
         <!-- Bottom -->
-        <div class="bg-accent px-6 py-2 text-center">
-          <span class="text-primary text-xs font-semibold">
+        <div class="px-6 py-2 text-center bg-accent">
+          <span class="text-xs font-semibold text-primary">
             Valid Until: {{ expiryDate }}
           </span>
         </div>
@@ -77,16 +74,14 @@
       </div>
 
       <!-- Download button -->
-      <button
-        @click="downloadCard"
-        class="w-full mt-4 bg-accent text-primary font-semibold py-2.5 rounded-lg hover:opacity-90 transition"
-      >
+      <button @click="downloadCard"
+        class="w-full mt-4 bg-accent text-primary font-semibold py-2.5 rounded-lg hover:opacity-90 transition">
         Download Card
       </button>
 
     </div>
 
-    <div v-else class="text-red-500 mt-20">Student not found.</div>
+    <div v-else class="mt-20 text-red-500">Student not found.</div>
   </div>
 </template>
 
