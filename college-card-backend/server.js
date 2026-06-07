@@ -7,6 +7,7 @@ require("./models/Department");
 require("./models/Student");
 require("./models/Card");
 require("./models/User");
+require("./models/Otp");
 
 const authRoutes = require("./routes/auth");
 const studentRoutes = require("./routes/students");
