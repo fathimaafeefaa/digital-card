@@ -1,88 +1,145 @@
 <template>
-  <div class="flex items-center justify-center min-h-screen px-4" style="background: #1a3a5c;">
+  <div class="min-h-screen flex flex-col" style="background: #1a3a5c;">
 
-    <div class="w-full max-w-md overflow-hidden bg-white shadow-2xl rounded-2xl">
-
-      <!-- EAU Header -->
-      <div style="background: #1a3a5c;" class="px-8 py-8 text-center">
-        <div class="flex items-center justify-center w-20 h-20 mx-auto mb-4 rounded-full" style="background: #c8a84b;">
-          <span class="text-2xl font-bold text-white">EAU</span>
-        </div>
-        <h1 class="text-xl font-bold text-white">Emirates Aviation University</h1>
-        <p style="color: #c8a84b;" class="mt-1 text-sm">Digital Student Card Portal</p>
+    <!-- EAU Header -->
+    <div class="px-6 py-10 text-center">
+      <div class="w-20 h-20 rounded-full mx-auto mb-4 flex items-center justify-center" style="background: #c8a84b;">
+        <span class="font-black text-2xl" style="color: #1a3a5c;">EAU</span>
       </div>
-
-      <!-- Form -->
-      <div class="px-8 py-8">
-
-        <!-- Error -->
-        <div v-if="error" class="px-4 py-3 mb-4 text-sm text-red-600 border border-red-200 rounded-lg bg-red-50">
-          {{ error }}
-        </div>
-
-        <!-- Success -->
-        <div v-if="successMsg"
-          class="px-4 py-3 mb-4 text-sm text-green-600 border border-green-200 rounded-lg bg-green-50">
-          {{ successMsg }}
-        </div>
-
-        <!-- Step 1: Email -->
-        <div v-if="step === 1">
-          <p class="mb-6 text-sm text-center text-gray-600">
-            Enter your EAU email address to receive a login code
-          </p>
-          <div class="mb-4">
-            <label class="block mb-1 text-sm font-medium text-gray-700">EAU Email Address</label>
-            <input v-model="email" type="email" placeholder="yourname@eau.ac.ae"
-              class="w-full px-4 py-3 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2"
-              style="--tw-ring-color: #1a3a5c;" @keyup.enter="requestOTP" />
-          </div>
-          <button @click="requestOTP" :disabled="loading"
-            class="w-full py-3 font-semibold text-white transition rounded-lg hover:opacity-90 disabled:opacity-50"
-            style="background: #1a3a5c;">
-            {{ loading ? 'Sending code...' : 'Send Login Code' }}
-          </button>
-        </div>
-
-        <!-- Step 2: OTP -->
-        <div v-if="step === 2">
-          <p class="mb-2 text-sm text-center text-gray-600">
-            Enter the 6-digit code sent to
-          </p>
-          <p class="mb-6 font-semibold text-center" style="color: #1a3a5c;">{{ email }}</p>
-
-          <div class="mb-4">
-            <label class="block mb-1 text-sm font-medium text-gray-700">Verification Code</label>
-            <input v-model="otp" type="text" maxlength="6" placeholder="000000"
-              class="w-full px-4 py-3 text-2xl font-bold tracking-widest text-center border border-gray-300 rounded-lg focus:outline-none focus:ring-2"
-              @keyup.enter="verifyOTP" />
-          </div>
-
-          <button @click="verifyOTP" :disabled="loading"
-            class="w-full py-3 mb-3 font-semibold text-white transition rounded-lg hover:opacity-90 disabled:opacity-50"
-            style="background: #1a3a5c;">
-            {{ loading ? 'Verifying...' : 'Verify & Login' }}
-          </button>
-
-          <button @click="step = 1; otp = ''; error = ''"
-            class="w-full py-2 text-sm text-gray-500 transition border border-gray-200 rounded-lg hover:bg-gray-50">
-            ← Use different email
-          </button>
-
-          <p class="mt-4 text-xs text-center text-gray-400">
-            Didn't receive the code?
-            <button @click="requestOTP" class="underline" style="color: #1a3a5c;">Resend</button>
-          </p>
-        </div>
-
-      </div>
-
-      <!-- Footer -->
-      <div class="px-8 py-4 text-center border-t border-gray-100">
-        <p class="text-xs text-gray-400">© Emirates Aviation University — Student Portal</p>
-      </div>
-
+      <h1 class="text-white font-bold text-xl">Emirates Aviation University</h1>
+      <p class="text-sm mt-1" style="color: #c8a84b;">Digital Student Card Portal</p>
     </div>
+
+    <!-- Card -->
+    <div class="flex-1 flex items-start justify-center px-4 pb-10">
+      <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
+
+        <!-- Tabs -->
+        <div class="flex border-b border-gray-100">
+          <button @click="activeTab = 'student'" class="flex-1 py-4 text-sm font-semibold transition" :style="activeTab === 'student'
+            ? 'color: #1a3a5c; border-bottom: 3px solid #c8a84b;'
+            : 'color: #9ca3af;'">
+            Student Login
+          </button>
+          <button @click="activeTab = 'admin'" class="flex-1 py-4 text-sm font-semibold transition" :style="activeTab === 'admin'
+            ? 'color: #1a3a5c; border-bottom: 3px solid #c8a84b;'
+            : 'color: #9ca3af;'">
+            Admin Login
+          </button>
+        </div>
+
+        <div class="px-8 py-8">
+
+          <!-- Error -->
+          <div v-if="error" class="bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg px-4 py-3 mb-4">
+            {{ error }}
+          </div>
+
+          <!-- Success -->
+          <div v-if="successMsg"
+            class="bg-green-50 border border-green-200 text-green-600 text-sm rounded-lg px-4 py-3 mb-4">
+            {{ successMsg }}
+          </div>
+
+          <!-- STUDENT LOGIN TAB -->
+          <div v-if="activeTab === 'student'">
+            <p class="text-gray-500 text-sm mb-6 text-center">
+              Login with your Student ID and password
+            </p>
+            <div class="space-y-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Student ID</label>
+                <input v-model="studentForm.student_id" type="text" placeholder="EAU-AVM-2021-001"
+                  class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2"
+                  style="focus:ring-color: #1a3a5c;" @keyup.enter="studentLogin" />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                <input v-model="studentForm.password" type="password" placeholder="••••••••"
+                  class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2"
+                  @keyup.enter="studentLogin" />
+              </div>
+              <button @click="studentLogin" :disabled="loading"
+                class="w-full text-white font-semibold py-3 rounded-lg hover:opacity-90 transition disabled:opacity-50"
+                style="background: #1a3a5c;">
+                {{ loading ? 'Logging in...' : 'Login' }}
+              </button>
+            </div>
+
+            <!-- Test credentials hint -->
+            <div class="mt-6 p-3 rounded-lg text-xs text-gray-400 border border-gray-100 text-center">
+              <p class="font-semibold mb-1 text-gray-500">Test credentials</p>
+              <p>ID: EAU-AVM-2021-001</p>
+              <p>Password: student123</p>
+            </div>
+          </div>
+
+          <!-- ADMIN LOGIN TAB -->
+          <div v-if="activeTab === 'admin'">
+
+            <!-- Step 1: Email -->
+            <div v-if="adminStep === 1">
+              <p class="text-gray-500 text-sm mb-6 text-center">
+                Enter your admin email to receive a login code
+              </p>
+              <div class="space-y-4">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Admin Email</label>
+                  <input v-model="adminForm.email" type="email" placeholder="admin@eau.ac.ae"
+                    class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2"
+                    @keyup.enter="requestOTP" />
+                </div>
+                <button @click="requestOTP" :disabled="loading"
+                  class="w-full text-white font-semibold py-3 rounded-lg hover:opacity-90 transition disabled:opacity-50"
+                  style="background: #1a3a5c;">
+                  {{ loading ? 'Sending code...' : 'Send Login Code' }}
+                </button>
+              </div>
+            </div>
+
+            <!-- Step 2: OTP -->
+            <div v-if="adminStep === 2">
+              <p class="text-gray-500 text-sm mb-2 text-center">Enter the 6-digit code sent to</p>
+              <p class="font-semibold text-center mb-6 text-sm" style="color: #1a3a5c;">{{ adminForm.email }}</p>
+
+              <div class="space-y-4">
+                <div class="flex gap-2 justify-center">
+                  <input v-for="(_, i) in 6" :key="i" v-model="otp[i]" type="text" maxlength="1"
+                    class="otp-input w-12 h-12 border border-gray-300 rounded-lg text-center text-xl font-semibold focus:outline-none focus:ring-2"
+                    @input="handleOtpInput(i, $event)" @keydown="handleOtpKeydown(i, $event)" />
+                </div>
+
+                <button @click="verifyOTP" :disabled="loading"
+                  class="w-full text-white font-semibold py-3 rounded-lg hover:opacity-90 transition disabled:opacity-50"
+                  style="background: #1a3a5c;">
+                  {{ loading ? 'Verifying...' : 'Verify & Login' }}
+                </button>
+
+                <button @click="adminStep = 1; otp = ['', '', '', '', '', '']; error = ''"
+                  class="w-full text-sm py-2 rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 transition">
+                  ← Use different email
+                </button>
+
+                <p class="text-center text-xs text-gray-400">
+                  Didn't receive the code?
+                  <button @click="requestOTP" class="underline font-semibold" style="color: #1a3a5c;">
+                    Resend
+                  </button>
+                </p>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="py-4 text-center">
+      <p class="text-xs" style="color: rgba(255,255,255,0.4);">© Emirates Aviation University — Student Portal</p>
+    </div>
+
   </div>
 </template>
 
@@ -94,25 +151,58 @@ definePageMeta({ layout: false })
 const auth = useAuthStore()
 const router = useRouter()
 
-const step = ref(1)
-const email = ref('')
-const otp = ref('')
+const activeTab = ref('student')
 const loading = ref(false)
 const error = ref('')
 const successMsg = ref('')
 
+// Student login
+const studentForm = reactive({ student_id: '', password: '' })
+
+// Admin OTP login
+const adminForm = reactive({ email: '' })
+const adminStep = ref(1)
+const otp = ref(['', '', '', '', '', ''])
+
+const studentLogin = async () => {
+  error.value = ''
+  if (!studentForm.student_id || !studentForm.password) {
+    error.value = 'Please enter your Student ID and password'
+    return
+  }
+  loading.value = true
+  try {
+    const res = await $fetch('http://localhost:5000/api/auth/student-login', {
+      method: 'POST',
+      body: {
+        student_id: studentForm.student_id,
+        password: studentForm.password
+      }
+    })
+    auth.setAuth(res.token, res.user)
+    router.push(`/card/${res.user.studentId}`)
+  } catch (err) {
+    error.value = err?.data?.message || 'Login failed. Check your credentials.'
+  } finally {
+    loading.value = false
+  }
+}
+
 const requestOTP = async () => {
   error.value = ''
   successMsg.value = ''
-  if (!email.value) return error.value = 'Please enter your email'
+  if (!adminForm.email) {
+    error.value = 'Please enter your email'
+    return
+  }
   loading.value = true
   try {
     await $fetch('http://localhost:5000/api/auth/request-otp', {
       method: 'POST',
-      body: { email: email.value }
+      body: { email: adminForm.email }
     })
     successMsg.value = 'Code sent! Check your email inbox.'
-    step.value = 2
+    adminStep.value = 2
   } catch (err) {
     error.value = err?.data?.message || 'Failed to send code. Try again.'
   } finally {
@@ -122,23 +212,42 @@ const requestOTP = async () => {
 
 const verifyOTP = async () => {
   error.value = ''
-  if (!otp.value || otp.value.length !== 6) return error.value = 'Enter the 6-digit code'
+  const otpCode = otp.value.join('')
+  if (otpCode.length !== 6) {
+    error.value = 'Please enter the full 6-digit code'
+    return
+  }
   loading.value = true
   try {
     const res = await $fetch('http://localhost:5000/api/auth/verify-otp', {
       method: 'POST',
-      body: { email: email.value, code: otp.value }
+      body: { email: adminForm.email, code: otpCode }
     })
     auth.setAuth(res.token, res.user)
-    if (res.user.role === 'admin') {
-      router.push('/admin')
-    } else {
-      router.push(`/card/${res.user.studentId}`)
-    }
+    router.push('/admin')
   } catch (err) {
     error.value = err?.data?.message || 'Invalid code. Try again.'
+    otp.value = ['', '', '', '', '', '']
   } finally {
     loading.value = false
+  }
+}
+
+const handleOtpInput = (index, event) => {
+  const value = event.target.value
+  if (value.length > 1) {
+    otp.value[index] = value[value.length - 1]
+  }
+  if (value && index < 5) {
+    const inputs = document.querySelectorAll('.otp-input')
+    if (inputs[index + 1]) inputs[index + 1].focus()
+  }
+}
+
+const handleOtpKeydown = (index, event) => {
+  if (event.key === 'Backspace' && !otp.value[index] && index > 0) {
+    const inputs = document.querySelectorAll('.otp-input')
+    if (inputs[index - 1]) inputs[index - 1].focus()
   }
 }
 </script>

@@ -1,7 +1,9 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
 const User = require("../models/User");
 const Student = require("../models/Student");
+const Department = require("../models/Department");
 const Otp = require("../models/Otp");
 const { sendOTP } = require("../services/emailService");
 const router = express.Router();
@@ -95,6 +97,59 @@ router.post("/verify-otp", async (req, res) => {
     res
       .status(500)
       .json({ message: "Verification failed", error: err.message });
+  }
+});
+// Student login with Student ID + Password
+router.post("/student-login", async (req, res) => {
+  try {
+    const { student_id, password } = req.body;
+
+    if (!student_id || !password) {
+      return res
+        .status(400)
+        .json({ message: "Student ID and password are required" });
+    }
+
+    const student = await Student.findOne({ where: { student_id } });
+    if (!student) {
+      return res.status(401).json({ message: "Student ID not found" });
+    }
+
+    const user = await User.findOne({ where: { email: student.email } });
+    if (!user) {
+      return res
+        .status(401)
+        .json({ message: "No account found for this student" });
+    }
+
+    const valid = await bcrypt.compare(password, user.password_hash);
+    if (!valid) {
+      return res.status(401).json({ message: "Incorrect password" });
+    }
+
+    const token = jwt.sign(
+      {
+        id: user.id,
+        email: user.email,
+        role: "student",
+        studentId: student.id,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" },
+    );
+
+    res.json({
+      token,
+      user: {
+        id: user.id,
+        email: user.email,
+        role: "student",
+        studentId: student.id,
+      },
+    });
+  } catch (err) {
+    console.error("Student login error:", err);
+    res.status(500).json({ message: "Server error", error: err.message });
   }
 });
 

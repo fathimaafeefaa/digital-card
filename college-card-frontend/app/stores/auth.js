@@ -24,9 +24,16 @@ export const useAuthStore = defineStore("auth", {
 
     loadFromStorage() {
       if (process.client) {
-        this.token = localStorage.getItem("token");
-        const u = localStorage.getItem("user");
-        this.user = u ? JSON.parse(u) : null;
+        const token = localStorage.getItem("token");
+        const user = localStorage.getItem("user");
+        if (token) this.token = token;
+        if (user) {
+          try {
+            this.user = JSON.parse(user);
+          } catch (e) {
+            this.user = null;
+          }
+        }
       }
     },
 

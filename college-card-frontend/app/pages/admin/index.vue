@@ -1,37 +1,37 @@
 <template>
   <div>
-    <h1 class="mb-6 text-2xl font-bold text-primary">Admin Dashboard</h1>
+    <h1 class="text-2xl font-bold text-eau-navy mb-6">Admin Dashboard</h1>
 
     <!-- Stats -->
-    <div class="grid grid-cols-2 gap-4 mb-8 md:grid-cols-4">
-      <div class="p-4 text-center bg-white shadow rounded-xl">
-        <p class="text-3xl font-bold text-primary">{{ stats.total }}</p>
-        <p class="mt-1 text-sm text-gray-500">Total Students</p>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+      <div class="bg-white rounded-xl shadow p-6 text-center">
+        <p class="text-4xl font-bold text-eau-navy">{{ stats.total }}</p>
+        <p class="text-gray-500 text-sm mt-1">Total Students</p>
       </div>
-      <div class="p-4 text-center bg-white shadow rounded-xl">
-        <p class="text-3xl font-bold text-green-500">{{ stats.active }}</p>
-        <p class="mt-1 text-sm text-gray-500">Active Cards</p>
+      <div class="bg-white rounded-xl shadow p-6 text-center">
+        <p class="text-4xl font-bold text-green-500">{{ stats.active }}</p>
+        <p class="text-gray-500 text-sm mt-1">Active Cards</p>
       </div>
-      <div class="p-4 text-center bg-white shadow rounded-xl">
-        <p class="text-3xl font-bold text-accent">{{ stats.departments }}</p>
-        <p class="mt-1 text-sm text-gray-500">Departments</p>
+      <div class="bg-white rounded-xl shadow p-6 text-center">
+        <p class="text-4xl font-bold text-eau-gold">{{ stats.departments }}</p>
+        <p class="text-gray-500 text-sm mt-1">Departments</p>
       </div>
-      <div class="p-4 text-center bg-white shadow rounded-xl">
-        <p class="text-3xl font-bold text-blue-500">{{ stats.graduated }}</p>
-        <p class="mt-1 text-sm text-gray-500">Graduated</p>
+      <div class="bg-white rounded-xl shadow p-6 text-center">
+        <p class="text-4xl font-bold text-blue-500">{{ stats.graduated }}</p>
+        <p class="text-gray-500 text-sm mt-1">Graduated</p>
       </div>
     </div>
 
     <!-- Students Table -->
-    <div class="overflow-hidden bg-white shadow rounded-xl">
-      <div class="flex items-center justify-between px-6 py-4 border-b">
+    <div class="bg-white rounded-xl shadow overflow-hidden">
+      <div class="px-6 py-4 border-b flex justify-between items-center flex-wrap gap-4">
         <h2 class="font-semibold text-gray-700">All Students</h2>
         <input v-model="search" placeholder="Search by name or ID..."
-          class="border border-gray-200 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary w-64" />
+          class="border border-gray-200 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-eau-navy w-64" />
       </div>
       <div class="overflow-x-auto">
         <table class="w-full text-sm">
-          <thead class="text-xs text-gray-500 uppercase bg-gray-50">
+          <thead class="bg-gray-50 text-gray-500 text-xs uppercase">
             <tr>
               <th class="px-6 py-3 text-left">Student</th>
               <th class="px-6 py-3 text-left">ID</th>
@@ -57,7 +57,7 @@
                 </span>
               </td>
               <td class="px-6 py-3">
-                <NuxtLink :to="`/card/${s.id}`" class="text-xs font-semibold text-primary hover:underline">
+                <NuxtLink :to="`/card/${s.id}`" class="text-eau-navy hover:underline text-xs font-semibold">
                   View Card
                 </NuxtLink>
               </td>

@@ -8,8 +8,12 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: "#1e3a5f",
-        accent: "#c8a84b",
+        eau: {
+          navy: "#1a3a5c",
+          gold: "#c8a84b",
+          white: "#ffffff",
+          light: "#f0f4f8",
+        },
       },
     },
   },
