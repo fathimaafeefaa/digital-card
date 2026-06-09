@@ -132,6 +132,11 @@
 </template>
 
 <script setup>
+
+definePageMeta({
+  middleware: 'admin'
+})
+
 import { useAuthStore } from '~/stores/auth'
 
 const auth = useAuthStore()
