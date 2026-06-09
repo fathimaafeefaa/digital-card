@@ -14,6 +14,7 @@ const studentRoutes = require("./routes/students");
 const cardRoutes = require("./routes/cards");
 
 const app = express();
+const uploadRoute = require("./routes/upload");
 
 app.use(
   cors({
@@ -26,6 +27,8 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/students", studentRoutes);
 app.use("/api/cards", cardRoutes);
+app.use("/uploads", express.static("uploads"));
+app.use("/api/upload", uploadRoute);
 
 app.get("/api/health", (req, res) => {
   res.json({ status: "OK", message: "College Card API running" });

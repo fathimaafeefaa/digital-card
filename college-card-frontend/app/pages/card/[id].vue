@@ -21,18 +21,19 @@
 
     <!-- Content -->
     <div class="flex justify-center px-4 py-8">
+
+      <!-- Loading -->
       <div v-if="loading" class="mt-20 text-center">
-        <div class="w-10 h-10 mx-auto mb-4 border-4 rounded-full border-t-transparent animate-spin"
+        <div class="w-10 h-10 mx-auto mb-4 border-4 rounded-full animate-spin"
           style="border-color: #1a3a5c; border-top-color: transparent;"></div>
         <p class="text-sm text-gray-500">Loading your card...</p>
       </div>
 
+      <!-- Card -->
       <div v-else-if="student" class="w-full max-w-sm">
 
-        <!-- Digital Card -->
-        <div class="relative overflow-hidden shadow-2xl rounded-2xl"
-          style="background: #1a3a5c; animation: cardFlip 0.6s ease forwards;" @mouseenter="isHovered = true"
-          @mouseleave="isHovered = false">
+        <div class="relative overflow-hidden shadow-2xl rounded-2xl card-enter" style="background: #1a3a5c;"
+          @mouseenter="isHovered = true" @mouseleave="isHovered = false">
 
           <!-- Watermark -->
           <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none">
@@ -42,10 +43,8 @@
             </div>
           </div>
 
-          <!-- Shimmer on hover -->
-          <div v-if="isHovered" class="absolute inset-0 z-10 pointer-events-none"
-            style="background: linear-gradient(110deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.07) 50%, rgba(255,255,255,0) 100%); transition: opacity 0.3s;">
-          </div>
+          <!-- Shimmer -->
+          <div v-if="isHovered" class="absolute inset-0 z-10 pointer-events-none shimmer"></div>
 
           <!-- Top Banner -->
           <div class="relative z-10 flex items-center justify-between px-6 py-3" style="background: #c8a84b;">
@@ -68,34 +67,41 @@
             </div>
 
             <!-- Name -->
-            <div class="mb-6 text-center">
+            <div class="mb-6 text-center detail-row" style="animation-delay: 100ms;">
               <h2 class="text-xl font-bold text-white">{{ student.full_name }}</h2>
               <p class="text-sm font-semibold mt-0.5" style="color: #c8a84b;">
                 {{ student.Department?.name }}
               </p>
             </div>
 
+            <!-- Divider -->
+            <div class="h-px mb-4" style="background: rgba(200,168,75,0.2);"></div>
+
             <!-- Details -->
-            <div class="mb-6 space-y-2">
-              <div v-for="(detail, index) in cardDetails" :key="detail.label" class="flex justify-between"
-                :style="`opacity: 0; animation: fadeInUp 0.4s ease forwards; animation-delay: ${300 + index * 80}ms;`">
+            <div class="mb-6 space-y-3">
+              <div v-for="(detail, index) in cardDetails" :key="detail.label"
+                class="flex items-center justify-between detail-row" :style="`animation-delay: ${200 + index * 80}ms;`">
                 <span class="text-xs" style="color: rgba(255,255,255,0.5);">{{ detail.label }}</span>
                 <span class="text-xs font-semibold"
-                  :style="detail.label === 'Status' ? 'color: #4ade80;' : 'color: white;'">
+                  :style="detail.label === 'Status' ? 'color: #4ade80;' : 'color: #ffffff;'">
                   {{ detail.value }}
                 </span>
               </div>
             </div>
 
+            <!-- Divider -->
+            <div class="h-px mb-4" style="background: rgba(200,168,75,0.2);"></div>
+
             <!-- QR Code -->
-            <div class="relative flex justify-center p-3 bg-white rounded-xl"
-              style="box-shadow: 0 0 0 2px rgba(200,168,75,0.6);">
+            <div class="relative flex justify-center p-3 bg-white rounded-xl detail-row"
+              style="box-shadow: 0 0 0 2px rgba(200,168,75,0.6); animation-delay: 800ms;">
               <img v-if="qrDataUrl" :src="qrDataUrl" width="140" height="140" alt="QR Code" />
               <div v-else class="flex items-center justify-center text-xs text-gray-300 w-36 h-36">
                 Generating...
               </div>
             </div>
-            <p class="mt-2 text-xs text-center" style="color: rgba(255,255,255,0.4);">
+            <p class="mt-2 text-xs text-center detail-row"
+              style="color: rgba(255,255,255,0.4); animation-delay: 900ms;">
               Scan to verify identity
             </p>
 
@@ -123,6 +129,7 @@
 
       <!-- Not found -->
       <div v-else class="mt-20 text-center">
+        <p class="mb-3 text-4xl">🎓</p>
         <p class="font-semibold text-red-500">Student not found.</p>
         <NuxtLink to="/" class="block mt-3 text-sm underline" style="color: #1a3a5c;">
           Back to Login
@@ -134,7 +141,6 @@
 </template>
 
 <script setup>
-
 definePageMeta({
   middleware: 'auth'
 })
@@ -216,6 +222,22 @@ const downloadCard = () => {
 </script>
 
 <style scoped>
+.card-enter {
+  animation: cardFlip 0.6s ease forwards;
+}
+
+.detail-row {
+  opacity: 0;
+  animation: fadeInUp 0.4s ease forwards;
+}
+
+.shimmer {
+  background: linear-gradient(110deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.07) 50%,
+      rgba(255, 255, 255, 0) 100%);
+}
+
 @keyframes cardFlip {
   from {
     opacity: 0;
@@ -237,6 +259,15 @@ const downloadCard = () => {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .card-enter,
+  .detail-row {
+    animation: none !important;
+    opacity: 1 !important;
   }
 }
 </style>
